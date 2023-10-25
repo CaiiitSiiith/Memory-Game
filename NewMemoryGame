@@ -1,0 +1,77 @@
+package memory;
+
+import javax.swing.JOptionPane;
+
+import se.lth.cs.pt.window.SimpleWindow;
+
+public class MemoryGame {
+	public static void main(String[] args) {
+		
+		boolean StartGame = true;
+		while (StartGame) {
+
+			
+			String[] frontFileNames = { "can.jpg", "flopsy_mopsy_cottontail.jpg", "friends.jpg", "mother_ladybird.jpg",
+					"mr_mcgregor.jpg", "mrs_rabbit.jpg", "mrs_tittlemouse.jpg", "radishes.jpg" };
+			// Fyll i egen kod här allt under denna är ifyllt!!
+			String backFileName = "back.jpg";
+			MemoryBoard mem = new MemoryBoard(4, backFileName, frontFileNames);
+			MemoryWindow w = new MemoryWindow(mem);
+			// mem.getCard(2, 1);
+			// System.out.println(mem.getSize());
+
+			int numberGuess = 0;
+		
+			// mem.createCards(backFileName, frontFileNames);
+			while (true) {
+				
+				
+				w.drawBoard();
+
+				w.waitForMouseClick();
+				int r = w.getMouseRow();
+				int c = w.getMouseCol();
+				if (mem.frontUp(r, c)) {
+					mem.turnCard(r, c);
+					w.waitForMouseClick();
+				}
+				mem.turnCard(r, c);
+				w.drawCard(r, c);
+				w.waitForMouseClick();
+				int r2 = w.getMouseRow();
+				int c2 = w.getMouseCol();
+				if (mem.frontUp(r2, c2)) {
+					mem.turnCard(r, c);
+					w.waitForMouseClick();
+				} else {
+					mem.turnCard(r2, c2);
+					w.drawCard(r2, c2);
+					numberGuess++;
+					w.delay(1000);
+					if (!mem.same(r, c, r2, c2)) {
+						mem.turnCard(r, c);
+						mem.turnCard(r2, c2);
+					} else {
+						if (mem.hasWon()) {
+							JOptionPane.showMessageDialog(null,
+									"Youve won! The number of times you guessed was: " + numberGuess + " times!",
+									"Congratulations!", JOptionPane.INFORMATION_MESSAGE);
+							Object[] options = { "OK", "CANCEL" };
+							int dialogButton = JOptionPane.showOptionDialog(null, "Want to play another MemoryGame?",
+									"Continue?", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
+									options, options[0]);
+							if (dialogButton == JOptionPane.YES_OPTION) {
+								StartGame = true; break;  } else {StartGame = false; w.close(); break;}
+							
+							// break;
+						}
+						continue;
+					}
+				}
+			}
+
+		}
+
+	}
+
+}
