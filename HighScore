@@ -1,0 +1,57 @@
+package memory;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class HighScore {
+	private int score;
+	
+	public HighScore(int score) {
+		
+		int highScore = 0;
+	    try {
+	        BufferedReader reader = new BufferedReader(new FileReader("/home/elin/Documents/labbar/pt-workspace/Lab08-memory/highscore.txt"));
+	        String line = reader.readLine();
+	        while (line != null) {                // read the score file line by line
+	            try {
+	                score = Integer.parseInt(line.trim());   // parse each line as an int
+	                if (score > highScore)                       // and keep track of the largest
+	                { 
+	                    highScore = score; 
+	                }
+	            } catch (NumberFormatException e1) {
+	            	 // ignore invalid scores
+	                //System.err.println("ignoring invalid score: " + line);
+	            }
+	            line = reader.readLine();
+	        }
+	        reader.close();
+
+	    } catch (IOException ex) {
+	        System.err.println("ERROR reading scores from file");
+	    }
+	 // display the high score
+	    if (score > highScore)
+	    {    
+	        System.out.println("You now have the new high score! The previous high score was " + highScore);
+	    } else if (score == highScore) {
+	        System.out.println("You tied the high score!");
+	    } else {
+	        System.out.println("The all time high score was " + highScore);
+	    }
+	 // append the last score to the end of the file
+	    try {
+	        BufferedWriter output = new BufferedWriter(new FileWriter("/home/elin/Documents/labbar/pt-workspace/Lab08-memory/highscore.txt", true));
+	        output.newLine();
+	        output.append("" + score);
+	        output.close();
+
+	    } catch (IOException ex1) {
+	        System.out.printf("ERROR writing score to file: %s\n", ex1);
+	    }
+	
+	}
+}
